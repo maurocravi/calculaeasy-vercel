@@ -1,0 +1,161 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CalculatorShell from "../../components/calculators/CalculatorShell.astro";
+import InputNumber from "../../components/calculators/InputNumber.astro";
+import { formatUYU } from "../../lib/calculations/utils";
+---
+
+<Layout>
+    <div class="bg-indigo-50 min-h-screen py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <a
+                href="/"
+                class="inline-flex items-center text-indigo-600 font-medium mb-8 hover:text-indigo-800 transition-colors"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                Volver al inicio
+            </a>
+
+            <CalculatorShell
+                title="Calculadora de Salario Vacacional"
+                description="Calculá cuánto te corresponde de Salario Vacacional líquido según tus días de licencia."
+            >
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                    <!-- Form -->
+                    <div class="space-y-6">
+                        <InputNumber
+                            label="Sueldo Nominal Mensual"
+                            name="monthlyNominal"
+                            placeholder="Ej: 45000"
+                            min={0}
+                        />
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <InputNumber
+                                label="Días de Licencia"
+                                name="vacationDays"
+                                value={20}
+                                min={1}
+                            />
+                            <InputNumber
+                                label="Divisor (Días Mes)"
+                                name="monthDaysDivisor"
+                                value={30}
+                                min={1}
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="space-y-6">
+                        <div
+                            class="bg-indigo-900 rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg"
+                        >
+                            <div
+                                class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-indigo-500 rounded-full opacity-20 blur-xl"
+                            >
+                            </div>
+
+                            <div class="relative z-10 space-y-6">
+                                <div>
+                                    <p
+                                        class="text-indigo-300 text-sm font-medium uppercase tracking-wider mb-1"
+                                    >
+                                        Valor Jornal Vacacional
+                                    </p>
+                                    <p
+                                        class="text-2xl font-semibold"
+                                        id="result-daily"
+                                    >
+                                        $ 0
+                                    </p>
+                                </div>
+
+                                <div class="pt-4 border-t border-indigo-700">
+                                    <p
+                                        class="text-indigo-200 text-sm font-medium uppercase tracking-wider mb-1"
+                                    >
+                                        Total Salario Vacacional (Líquido)
+                                    </p>
+                                    <p
+                                        class="text-4xl sm:text-5xl font-bold"
+                                        id="result-total"
+                                    >
+                                        $ 0
+                                    </p>
+                                    <p
+                                        class="text-indigo-300 text-xs mt-2 opacity-80"
+                                    >
+                                        * Monto neto al bolsillo (el salario
+                                        vacacional no lleva descuentos, salvo
+                                        IRPF si supera el mínimo).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="p-4 bg-blue-50 rounded-xl border border-blue-100 text-sm text-blue-800"
+                        >
+                            <p>
+                                <strong>Nota:</strong> El Salario Vacacional es una
+                                partida 100% líquida (no lleva aportes jubilatorios
+                                ni FONASA). Sin embargo, suma para el cálculo del
+                                IRPF anual.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </CalculatorShell>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    import { calculateVacational } from "../../lib/calculations/uy/salary/vacational";
+    import { formatUYU } from "../../lib/calculations/utils";
+
+    const inputNominal = document.querySelector(
+        'input[name="monthlyNominal"]',
+    ) as HTMLInputElement;
+    const inputDays = document.querySelector(
+        'input[name="vacationDays"]',
+    ) as HTMLInputElement;
+    const inputDivisor = document.querySelector(
+        'input[name="monthDaysDivisor"]',
+    ) as HTMLInputElement;
+
+    const resultDaily = document.getElementById("result-daily");
+    const resultTotal = document.getElementById("result-total");
+
+    function recalculate() {
+        const monthlyNominal = parseFloat(inputNominal.value) || 0;
+        const vacationDays = parseFloat(inputDays.value) || 20;
+        const monthDaysDivisor = parseFloat(inputDivisor.value) || 30;
+
+        const result = calculateVacational({
+            monthlyNominal,
+            vacationDays,
+            monthDaysDivisor,
+        });
+
+        if (resultDaily) resultDaily.innerText = formatUYU(result.dailyRate);
+        if (resultTotal)
+            resultTotal.innerText = formatUYU(result.vacationalPay);
+    }
+
+    // Listeners
+    inputNominal?.addEventListener("input", recalculate);
+    inputDays?.addEventListener("input", recalculate);
+    inputDivisor?.addEventListener("input", recalculate);
+</script>

@@ -1,0 +1,227 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CalculatorShell from "../../components/calculators/CalculatorShell.astro";
+import InputNumber from "../../components/calculators/InputNumber.astro";
+import Select from "../../components/calculators/Select.astro";
+import { formatUYU } from "../../lib/calculations/utils";
+
+const monthsOptions = [
+    { label: "1 Mes", value: 1 },
+    { label: "2 Meses", value: 2 },
+    { label: "3 Meses", value: 3 },
+    { label: "4 Meses", value: 4 },
+    { label: "5 Meses", value: 5 },
+    { label: "6 Meses (Semestre completo)", value: 6 },
+];
+---
+
+<Layout>
+    <div class="bg-indigo-50 min-h-screen py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <a
+                href="/"
+                class="inline-flex items-center text-indigo-600 font-medium mb-8 hover:text-indigo-800 transition-colors"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                Volver al inicio
+            </a>
+
+            <CalculatorShell
+                title="Calculadora de Aguinaldo"
+                description="Estimá cuánto vas a cobrar de Aguinaldo (Sueldo Anual Complementario) en junio o diciembre."
+            >
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                    <!-- Form -->
+                    <div class="space-y-6">
+                        <Select
+                            label="Forma de cálculo"
+                            name="mode"
+                            options={[
+                                {
+                                    label: "Por sueldo mensual (estimado)",
+                                    value: "monthly",
+                                },
+                                {
+                                    label: "Por total ganado en el semestre",
+                                    value: "semesterTotal",
+                                },
+                            ]}
+                        />
+
+                        <div id="monthly-inputs">
+                            <div class="space-y-6">
+                                <InputNumber
+                                    label="Sueldo Nominal Mensual"
+                                    name="monthlyNominal"
+                                    placeholder="Ej: 45000"
+                                    min={0}
+                                />
+                                <Select
+                                    label="Meses trabajados (en el semestre)"
+                                    name="monthsWorked"
+                                    options={monthsOptions}
+                                    value={6}
+                                />
+                            </div>
+                        </div>
+
+                        <div id="semester-inputs" class="hidden">
+                            <InputNumber
+                                label="Total ganado en el semestre (Nominal)"
+                                name="semesterTotal"
+                                placeholder="Ej: 270000"
+                                min={0}
+                            />
+                            <p class="text-sm text-slate-500 mt-2">
+                                Sumá todos los sueldos nominales, horas extras y
+                                comisiones percibidas entre diciembre-mayo (para
+                                junio) o junio-noviembre (para diciembre).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="space-y-6">
+                        <div
+                            class="bg-indigo-900 rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg"
+                        >
+                            <div
+                                class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-indigo-500 rounded-full opacity-20 blur-xl"
+                            >
+                            </div>
+
+                            <div class="relative z-10">
+                                <p
+                                    class="text-indigo-200 text-sm font-medium uppercase tracking-wider mb-1"
+                                >
+                                    Aguinaldo Estimado
+                                </p>
+                                <div class="flex items-baseline gap-1">
+                                    <span
+                                        class="text-4xl sm:text-5xl font-bold"
+                                        id="result-aguinaldo">$ 0</span
+                                    >
+                                </div>
+                                <p
+                                    class="text-indigo-300 text-sm mt-2"
+                                    id="result-subtitle"
+                                >
+                                    Total semestre: $ 0
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            id="result-notes"
+                            class="hidden p-4 bg-blue-50 rounded-xl border border-blue-100 text-sm text-blue-800"
+                        >
+                            <!-- Takes notes from JS -->
+                        </div>
+
+                        <div
+                            class="p-4 bg-yellow-50 rounded-xl border border-yellow-100 text-sm text-yellow-800"
+                        >
+                            <strong>Importante:</strong> Al monto resultante se le
+                            deben aplicar los descuentos legales (Aportes Jubilatorios
+                            y FONASA) y, si corresponde, IRPF. Esta calculadora muestra
+                            el <strong>Aguinaldo Nominal</strong>.
+                        </div>
+                    </div>
+                </div>
+            </CalculatorShell>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    import { calculateAguinaldo } from "../../lib/calculations/uy/salary/aguinaldo";
+    import { formatUYU } from "../../lib/calculations/utils";
+
+    // Elements
+    const modeSelect = document.querySelector(
+        'select[name="mode"]',
+    ) as HTMLSelectElement;
+    const monthlyInputs = document.getElementById("monthly-inputs");
+    const semesterInputs = document.getElementById("semester-inputs");
+
+    const inputMonthlyNominal = document.querySelector(
+        'input[name="monthlyNominal"]',
+    ) as HTMLInputElement;
+    const inputMonthsWorked = document.querySelector(
+        'select[name="monthsWorked"]',
+    ) as HTMLSelectElement;
+    const inputSemesterTotal = document.querySelector(
+        'input[name="semesterTotal"]',
+    ) as HTMLInputElement;
+
+    const resultAguinaldo = document.getElementById("result-aguinaldo");
+    const resultSubtitle = document.getElementById("result-subtitle");
+    const resultNotes = document.getElementById("result-notes");
+
+    function toggleMode() {
+        if (!monthlyInputs || !semesterInputs) return;
+
+        const mode = modeSelect.value;
+        if (mode === "monthly") {
+            monthlyInputs.classList.remove("hidden");
+            semesterInputs.classList.add("hidden");
+        } else {
+            monthlyInputs.classList.add("hidden");
+            semesterInputs.classList.remove("hidden");
+        }
+        recalculate();
+    }
+
+    function recalculate() {
+        const mode = modeSelect.value as "monthly" | "semesterTotal";
+
+        const monthlyNominal = parseFloat(inputMonthlyNominal.value) || 0;
+        const monthsWorked = parseInt(inputMonthsWorked.value) || 6;
+        const semesterTotal = parseFloat(inputSemesterTotal.value) || 0;
+
+        const result = calculateAguinaldo({
+            mode,
+            monthlyNominal,
+            monthsWorked,
+            semesterTotal,
+        });
+
+        // Update UI
+        if (resultAguinaldo)
+            resultAguinaldo.innerText = formatUYU(result.aguinaldo);
+        if (resultSubtitle)
+            resultSubtitle.innerText = `Total generado: ${formatUYU(result.semesterTotalUsed)}`;
+
+        if (resultNotes) {
+            if (result.notes.length > 0) {
+                resultNotes.innerHTML = result.notes
+                    .map((n) => `<p>• ${n}</p>`)
+                    .join("");
+                resultNotes.classList.remove("hidden");
+            } else {
+                resultNotes.classList.add("hidden");
+                resultNotes.innerHTML = "";
+            }
+        }
+    }
+
+    // Listeners
+    modeSelect?.addEventListener("change", toggleMode);
+
+    inputMonthlyNominal?.addEventListener("input", recalculate);
+    inputMonthsWorked?.addEventListener("change", recalculate);
+    inputSemesterTotal?.addEventListener("input", recalculate);
+
+    // Initial
+    toggleMode();
+</script>

@@ -1,0 +1,197 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CalculatorShell from "../../components/calculators/CalculatorShell.astro";
+import InputNumber from "../../components/calculators/InputNumber.astro";
+import Select from "../../components/calculators/Select.astro";
+import { formatUYU } from "../../lib/calculations/utils";
+
+const surchargeOptions = [
+    { label: "Hora Extra Simple (100%)", value: 1.0 }, // Recargo del 100% (vale el doble)
+    { label: "Hora Extra en Feriado/Descanso (150%)", value: 1.5 }, // Recargo del 150% (vale 2.5 veces)
+    { label: "Recargo Nocturno (20%)", value: 0.2 },
+];
+---
+
+<Layout>
+    <div class="bg-indigo-50 min-h-screen py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <a
+                href="/"
+                class="inline-flex items-center text-indigo-600 font-medium mb-8 hover:text-indigo-800 transition-colors"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                Volver al inicio
+            </a>
+
+            <CalculatorShell
+                title="Calculadora de Horas Extra"
+                description="Calculá el valor de tus horas extra según tu sueldo y el tipo de recargo."
+            >
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                    <!-- Form -->
+                    <div class="space-y-6">
+                        <InputNumber
+                            label="Sueldo Nominal Mensual"
+                            name="monthlyNominal"
+                            placeholder="Ej: 30000"
+                            min={0}
+                        />
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <InputNumber
+                                label="Horas Mensuales"
+                                name="monthlyHours"
+                                value={192}
+                                Estándar
+                                comercio:
+                                44hs
+                                sem
+                                *
+                                4.33="~190."
+                                192
+                                es
+                                común.
+                                O
+                                200
+                                int.
+                                min={1}
+                            />
+                            <InputNumber
+                                label="Cantidad de Horas Extra"
+                                name="overtimeHours"
+                                placeholder="Ej: 5"
+                                min={0}
+                            />
+                        </div>
+
+                        <Select
+                            label="Tipo de Recargo"
+                            name="surchargeRate"
+                            options={surchargeOptions}
+                        />
+                    </div>
+
+                    <!-- Results -->
+                    <div class="space-y-6">
+                        <div
+                            class="bg-indigo-900 rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg"
+                        >
+                            <div
+                                class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-indigo-500 rounded-full opacity-20 blur-xl"
+                            >
+                            </div>
+
+                            <div class="relative z-10">
+                                <p
+                                    class="text-indigo-200 text-sm font-medium uppercase tracking-wider mb-1"
+                                >
+                                    Total a Cobrar (Extra)
+                                </p>
+                                <div class="flex items-baseline gap-1">
+                                    <span
+                                        class="text-4xl sm:text-5xl font-bold"
+                                        id="result-total">$ 0</span
+                                    >
+                                </div>
+                                <div
+                                    class="mt-4 grid grid-cols-2 gap-4 text-sm"
+                                >
+                                    <div>
+                                        <p class="text-indigo-300">
+                                            Valor Hora Simple
+                                        </p>
+                                        <p
+                                            class="font-semibold text-lg"
+                                            id="result-hourly-rate"
+                                        >
+                                            $ 0
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-indigo-300">
+                                            Valor Hora Extra
+                                        </p>
+                                        <p
+                                            class="font-semibold text-lg"
+                                            id="result-overtime-rate"
+                                        >
+                                            $ 0
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="p-4 bg-blue-50 rounded-xl border border-blue-100 text-sm text-blue-800"
+                        >
+                            <p>
+                                <strong>Nota:</strong> Las horas extras llevan aportes
+                                jubilatorios y FONASA igual que el sueldo, y también
+                                suman para IRPF.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </CalculatorShell>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    import { calculateOvertime } from "../../lib/calculations/uy/salary/overtime";
+    import { formatUYU } from "../../lib/calculations/utils";
+
+    const inputNominal = document.querySelector(
+        'input[name="monthlyNominal"]',
+    ) as HTMLInputElement;
+    const inputMonthlyHours = document.querySelector(
+        'input[name="monthlyHours"]',
+    ) as HTMLInputElement;
+    const inputOvertimeHours = document.querySelector(
+        'input[name="overtimeHours"]',
+    ) as HTMLInputElement;
+    const selectSurcharge = document.querySelector(
+        'select[name="surchargeRate"]',
+    ) as HTMLSelectElement;
+
+    const resultTotal = document.getElementById("result-total");
+    const resultHourlyRate = document.getElementById("result-hourly-rate");
+    const resultOvertimeRate = document.getElementById("result-overtime-rate");
+
+    function recalculate() {
+        const monthlyNominal = parseFloat(inputNominal.value) || 0;
+        const monthlyHours = parseFloat(inputMonthlyHours.value) || 192;
+        const overtimeHours = parseFloat(inputOvertimeHours.value) || 0;
+        const surchargeRate = parseFloat(selectSurcharge.value) || 1.0;
+
+        const result = calculateOvertime({
+            monthlyNominal,
+            monthlyHours,
+            overtimeHours,
+            surchargeRate,
+        });
+
+        if (resultTotal) resultTotal.innerText = formatUYU(result.overtimePay);
+        if (resultHourlyRate)
+            resultHourlyRate.innerText = formatUYU(result.hourlyRate);
+        if (resultOvertimeRate)
+            resultOvertimeRate.innerText = formatUYU(result.overtimeHourlyRate);
+    }
+
+    // Listeners
+    inputNominal?.addEventListener("input", recalculate);
+    inputMonthlyHours?.addEventListener("input", recalculate);
+    inputOvertimeHours?.addEventListener("input", recalculate);
+    selectSurcharge?.addEventListener("change", recalculate);
+</script>
