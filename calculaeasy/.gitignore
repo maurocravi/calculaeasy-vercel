@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# exports de Search Console: el repo es publico y son datos de trafico
+datos/

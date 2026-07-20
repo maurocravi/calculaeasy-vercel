@@ -1,0 +1,291 @@
+# Plan SEO — CalculaEasy
+
+Basado en Google Search Console, últimos 3 meses (18/04/2026 – 17/07/2026).
+Elaborado el 20/07/2026 a partir de los CSV exportados a `datos/`, que no está
+versionado: este repositorio es público y esos archivos contienen las
+estadísticas de tráfico del sitio.
+
+---
+
+## Resumen
+
+| Métrica | Valor |
+| --- | --- |
+| Clics | 215 |
+| Impresiones | 21.230 |
+| CTR | **1,01 %** |
+| Posición media | 7,74 |
+| Tráfico de Uruguay | 95 % (20.188 impresiones) |
+| Tráfico móvil | 75 % (15.942 impresiones) |
+
+**La buena noticia: el sitio está creciendo y rankeando cada vez mejor.**
+
+| Mes | Clics | Impresiones | Posición media |
+| --- | --- | --- | --- |
+| Abril | 18 | 1.493 | 9,2 |
+| Mayo | 56 | 4.946 | 9,2 |
+| Junio | 74 | 9.495 | 7,8 |
+| Julio (parcial) | 67 | 5.296 | **6,9** |
+
+Las impresiones se multiplicaron por 6 y la posición media mejoró de 9,2 a 6,9.
+Google te está mostrando cada vez más y cada vez más arriba. El problema no es
+visibilidad.
+
+**El problema es que te ven y no te clickean.** Ese es el eje de todo este plan.
+
+---
+
+## Diagnóstico
+
+### 1. El CTR es el cuello de botella (prioridad máxima)
+
+Un sitio en posición ~5-6 debería tener un CTR de 5-8 %. El conversor de sueldo
+está en posición 5,68 y saca **1,45 %**. Es entre 3 y 5 veces menos de lo
+esperable.
+
+Esto se repite en consultas individuales muy bien posicionadas:
+
+| Consulta | Posición | Impresiones | Clics |
+| --- | --- | --- | --- |
+| cuanto son 90 jornales | 3,5 | 14 | **0** |
+| como se calcula el valor hora de un sueldo mensual | 4,87 | 15 | **0** |
+| como calcular cuanto gano por hora | 5,65 | 17 | **0** |
+| cuanto gano | 5,81 | 16 | **0** |
+| calcular salario por hora | 6,4 | 20 | **0** |
+
+Estar cuarto y no recibir un solo clic en 3 meses no es normal. Las causas
+probables, en orden:
+
+- **Los títulos no se diferencian.** Todos siguen el patrón
+  `Calcular X Uruguay - CalculaEasy`. No hay año, ni cifra, ni gancho. Contra
+  competidores que ponen "2026" o "Actualizado", pierden.
+- **Google responde solo.** Muchas de esas consultas ("cuánto gano por hora")
+  se resuelven en un featured snippet o en la calculadora propia de Google. Si
+  no sos vos quien ocupa ese bloque, la posición 4 vale poco.
+- **La marca es desconocida.** A igualdad de resultado, la gente clickea lo que
+  reconoce. Esto se corrige con tiempo y con presencia, no con un cambio de
+  título.
+
+### 2. Cuatro calculadoras son invisibles
+
+Estas páginas tuvieron **cero impresiones** en 3 meses:
+
+- `/calculadoras/horas-extra-uruguay`
+- `/calculadoras/iva-uruguay`
+- `/calculadoras/salario-vacacional-uruguay`
+- `/calculadoras/indemnizacion-despido-uruguay`
+- `/calculadoras` (el índice)
+
+No es un problema de contenido: tienen entre 891 y 1.016 palabras, schema
+`FAQPage` y `BreadcrumbList`, igual que las que sí funcionan. Y salvo
+indemnización (19/01), fueron creadas el 03/01/2026, el mismo día que el
+conversor y aguinaldo.
+
+Mismo formato, misma antigüedad, misma profundidad — y cero impresiones. Eso
+apunta a que **no están indexadas**, no a que rankeen mal. Hay que verificarlo
+en Search Console antes de tocar nada.
+
+### 3. Se está indexando `www` y `no-www` por separado
+
+En `Páginas.csv` aparecen ambas versiones como URLs distintas:
+
+| URL | Clics | Impresiones | CTR |
+| --- | --- | --- | --- |
+| `https://calculaeasy.com/calculadoras/conversor-sueldo-uruguay` | 156 | 10.773 | 1,45 % |
+| `https://www.calculaeasy.com/calculadoras/conversor-sueldo-uruguay` | 5 | 126 | 3,97 % |
+
+Lo mismo con `/sobre-nosotros`. Google trata cada versión como una página
+aparte y reparte la autoridad entre las dos en lugar de sumarla.
+
+Además hay un desajuste interno: el **sitemap declara URLs con barra final**
+(`/calculadoras/aguinaldo-uruguay/`) pero el **canonical de la página no la
+lleva** (`https://calculaeasy.com/calculadoras/aguinaldo-uruguay`). Le estás
+dando dos direcciones distintas para la misma página.
+
+### 4. Todo depende de una sola página
+
+El conversor de sueldo genera **156 de los 215 clics: el 73 %**. Si Google
+cambia de opinión sobre esa página, el sitio pierde tres cuartas partes de su
+tráfico de un día para el otro.
+
+### 5. Hay demanda para "sueldo líquido" que no estás capturando
+
+Agrupando las consultas por tema:
+
+| Tema | Clics | Impresiones | CTR | Posición |
+| --- | --- | --- | --- | --- |
+| Por hora / día (conversor) | 17 | 384 | **4,43 %** | **5,2** |
+| Sueldo líquido / nominal | 2 | 507 | 0,39 % | **30,9** |
+| Aguinaldo | 2 | 244 | 0,82 % | **39,1** |
+
+El patrón es nítido: **donde rankeás bien, convertís bien** (4,43 % de CTR en el
+grupo del conversor, que es un CTR sano). Sueldo líquido tiene *más* demanda que
+el conversor pero está en posición 30 — página 3. Aguinaldo, en página 4.
+
+Y esto es aún más llamativo porque `sueldo-liquido-uruguay` es la página con
+**más contenido de todo el sitio** (1.345 palabras). Tiene el contenido; le
+falta autoridad.
+
+> ⚠️ Este cuadro sale de las 561 consultas del CSV, que suman ~1.656
+> impresiones: apenas el **8 % del total**. Search Console anonimiza la cola
+> larga. Los porcentajes son direccionales, no exactos.
+
+---
+
+## Pasos a realizar
+
+Ordenados por impacto sobre esfuerzo. Los tres primeros son de una tarde.
+
+### Paso 1 — Verificar por qué hay 4 calculadoras sin impresiones
+
+**Por qué primero:** es la única hipótesis del diagnóstico que todavía no está
+confirmada, y cambia todo lo demás. Si no están indexadas, ninguna optimización
+de contenido sirve hasta arreglarlo.
+
+- [ ] En Search Console → **Inspección de URL**, probar una por una las 5 URLs
+      del punto 2 del diagnóstico.
+- [ ] Anotar el estado exacto: ¿"Descubierta, no indexada"? ¿"Rastreada, no
+      indexada"? ¿"Página alternativa con canonical"?
+- [ ] Si no están indexadas → **Solicitar indexación** de cada una.
+- [ ] Revisar en Search Console → **Páginas** el informe de cobertura completo,
+      para ver si hay exclusiones que no aparecen en estos CSV.
+
+**Cómo sé si funcionó:** en 2-3 semanas esas URLs deberían registrar sus
+primeras impresiones. Si siguen en cero, el problema es de autoridad y hay que
+atacarlo con enlazado interno (paso 5).
+
+### Paso 2 — Unificar `www` / `no-www` y la barra final
+
+**Por qué:** estás repartiendo autoridad entre URLs duplicadas. Es puramente
+técnico, se hace una vez y no se vuelve a tocar.
+
+- [ ] Elegir la versión canónica. **Recomiendo `https://calculaeasy.com`**
+      (sin `www`): es la que ya concentra el 97 % de los clics.
+- [ ] Configurar en Vercel un redirect 301 permanente de `www.calculaeasy.com`
+      → `calculaeasy.com`.
+- [ ] Resolver el desajuste de la barra final. Definir `trailingSlash` de forma
+      explícita en `astro.config.mjs` y que el canonical de
+      `src/layouts/Layout.astro` coincida exactamente con lo que emite el
+      sitemap.
+- [ ] Verificar que ambas propiedades (`www` y sin `www`) estén dadas de alta en
+      Search Console para poder seguir la migración.
+
+**Cómo sé si funcionó:** las URLs con `www` desaparecen de `Páginas.csv` en el
+próximo export y sus impresiones se consolidan en la versión sin `www`.
+
+### Paso 3 — Reescribir títulos y descripciones
+
+**Por qué:** es la palanca más directa sobre el CTR, que es el problema
+principal. Con 21.000 impresiones, pasar de 1 % a 2,5 % de CTR son ~320 clics
+más por trimestre sin ganar una sola posición.
+
+- [ ] Reescribir los `<title>` de las 8 calculadoras incorporando: **el año**,
+      una **cifra concreta** cuando aplique, y el término tal como lo busca la
+      gente. Ejemplos:
+      - `Calcular Aguinaldo Uruguay - CalculaEasy`
+        → `Calculadora de Aguinaldo Uruguay 2026: cuánto cobrás`
+      - `Conversor de Sueldo Uruguay - CalculaEasy`
+        → `Cuánto gano por hora, día y año — Sueldo Uruguay 2026`
+- [ ] Reescribir las `description` en la misma línea: que respondan la pregunta
+      del buscador, no que describan la herramienta.
+- [ ] Priorizar las consultas de la tabla del punto 1 del diagnóstico: son
+      posiciones top-5 con cero clics, donde el margen de mejora es mayor.
+- [ ] Mantener los títulos por debajo de ~60 caracteres para que no se corten.
+
+**Cómo sé si funcionó:** comparar el CTR por página dentro de 4-6 semanas. Es la
+métrica a mirar; la posición debería quedar igual.
+
+**Ojo:** cambiar títulos puede mover posiciones en cualquier dirección. Hacelo
+en un solo deploy y anotá la fecha para poder atribuir el efecto.
+
+### Paso 4 — Revisar el schema
+
+**Por qué:** hoy hay 39 bloques `Question`/`Answer` en `FAQPage`. Desde agosto
+de 2023 Google **dejó de mostrar rich results de FAQ** salvo para sitios
+gubernamentales y de salud. Es decir: ese schema probablemente no te está dando
+ningún beneficio visual en los resultados.
+
+- [ ] Agregar schema `WebApplication` o `SoftwareApplication` a cada
+      calculadora. Es el tipo correcto para una herramienta interactiva y es
+      elegible para presentaciones enriquecidas.
+- [ ] Conservar el `BreadcrumbList` — ese **sí** se sigue mostrando y ayuda al
+      CTR.
+- [ ] No borrar el `FAQPage`: no penaliza y el contenido de las FAQ sigue siendo
+      útil para posicionar. Simplemente no esperes que se vea en el resultado.
+
+### Paso 5 — Subir "sueldo líquido" y "aguinaldo" de la página 3
+
+**Por qué:** es la mayor bolsa de demanda desperdiciada. Ya tenés el contenido
+(1.345 palabras en sueldo líquido, la página más extensa del sitio); el
+problema es autoridad, y la palanca más barata es el enlazado interno.
+
+- [ ] Enlazar desde el conversor — que concentra el 73 % del tráfico — hacia
+      sueldo líquido y aguinaldo, con texto de enlace descriptivo
+      ("calculá tu sueldo líquido", no "hacé clic acá").
+- [ ] Revisar que `src/config/relatedTools.ts` esté empujando tráfico hacia las
+      páginas débiles y no solo entre las fuertes.
+- [ ] Cubrir el vocabulario real de la gente. En las consultas aparecen
+      "nominal", "líquido", "neto", "BPS", "FONASA", "IRPF", "aportes",
+      "descuentos". Verificar que ese lenguaje esté en el contenido.
+- [ ] Aprovechar que ya existe `/calculadoras` como índice para distribuir
+      autoridad hacia las páginas huérfanas.
+
+**Cómo sé si funcionó:** la posición media del grupo "sueldo líquido" baja de 30
+hacia la primera página. Es el paso más lento: pensá en 2-3 meses.
+
+### Paso 6 — Reducir la dependencia del conversor
+
+**Por qué:** 73 % del tráfico en una sola URL es frágil. No es urgente, pero sí
+estratégico.
+
+- [ ] Tratar los pasos 1 y 5 como la vía para diversificar: cada calculadora que
+      empiece a traer tráfico baja ese porcentaje.
+- [ ] Priorizar por estacionalidad. El aguinaldo se cobra en **junio y
+      diciembre** en Uruguay: conviene tener esa página fuerte *antes* de esos
+      meses, no durante.
+- [ ] El salario vacacional tiene el mismo patrón estacional (licencia de
+      verano) — trabajarlo hacia fin de año.
+
+### Paso 7 — Optimizar para móvil
+
+**Por qué:** el 75 % de las impresiones son móviles, pero el CTR móvil (1,01 %)
+es igual al de escritorio (1,03 %). En general el móvil convierte peor, así que
+no hay una anomalía — pero es donde está tu gente.
+
+- [ ] Verificar Core Web Vitals en Search Console, sobre todo **CLS**: las
+      calculadoras insertan resultados dinámicamente y eso suele generar saltos
+      de layout que penalizan.
+- [ ] Comprobar que el resultado del cálculo se vea sin hacer scroll en un
+      teléfono.
+
+---
+
+## Qué NO hacer
+
+- **No persigas el tráfico internacional.** Estados Unidos tiene 660 impresiones
+  y 0 clics; casi todo el mundo fuera de Uruguay tiene CTR 0 %. El contenido es
+  específico de la normativa uruguaya y está bien que así sea. Ese tráfico es
+  ruido, no oportunidad.
+- **No agregues calculadoras nuevas todavía.** Ya tenés 4 sin una sola
+  impresión. Primero hacé que las existentes funcionen.
+- **No toques varias cosas a la vez.** Si cambiás títulos, schema y enlazado en
+  el mismo deploy, no vas a saber qué movió la aguja.
+
+---
+
+## Seguimiento
+
+Exportar de nuevo estos CSV **cada 4 semanas** y comparar. Las métricas que
+importan, en orden:
+
+1. **CTR por página** — es el problema principal. Objetivo realista: 2,5-3 % en
+   6 meses.
+2. **Impresiones de las 4 páginas invisibles** — cualquier número mayor a cero
+   es la señal de que el paso 1 funcionó.
+3. **Posición media del grupo "sueldo líquido"** — de 30 hacia la primera página.
+4. **Porcentaje de clics del conversor** — que baje del 73 % significa que el
+   sitio se está diversificando.
+
+No mires los clics totales como métrica principal: van a subir igual por el
+crecimiento que ya trae el sitio, y eso te puede hacer creer que un cambio
+funcionó cuando no hizo nada.
