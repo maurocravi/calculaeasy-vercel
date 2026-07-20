@@ -253,10 +253,11 @@ sitemap. **Ahora es cuestión de esperar 1-3 semanas** a que Google las procese.
 
 - [x] Solicitar indexación de las 5 URLs.
 - [x] Reenviar el sitemap.
-- [ ] **Pendiente / continuo:** engordar `/calculadoras`, que hoy tiene **164
-      palabras** contra 865-1.345 de las demás. Es el hub que reparte autoridad y
-      la página más flaca del sitio; con tan poco contenido puede quedar como
-      "Rastreada: actualmente sin indexar" aun con el redirect ya arreglado.
+- [x] Engordar `/calculadoras`: pasó de **164 a ~780 palabras** con una guía por
+      categorías (sueldo, beneficios laborales, impuestos) y una sección de FAQ
+      con `FAQPage` schema. De paso, cada calculadora ahora recibe **2 enlaces
+      internos** desde el hub (tarjeta + texto), lo que adelanta parte del
+      paso 5.
 
 **Cómo sé si funcionó:** cualquier número de impresiones mayor a cero en esas
 URLs. Es la métrica a vigilar las próximas semanas.

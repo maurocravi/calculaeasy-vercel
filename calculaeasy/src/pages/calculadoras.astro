@@ -8,7 +8,7 @@ const breadcrumbs = [
     { name: "Calculadoras", url: "/calculadoras" },
 ];
 
-const schema = breadcrumbSchema(breadcrumbs);
+const currentYear = new Date().getFullYear();
 
 const tools = [
     {
@@ -54,10 +54,48 @@ const tools = [
         href: "/calculadoras/indemnizacion-despido-uruguay",
     },
 ];
+
+const faqs = [
+    {
+        question: "¿Las calculadoras son gratis?",
+        answer: "Sí. Todas las calculadoras de CalculaEasy son gratuitas y no necesitás registrarte ni dejar tus datos. Ingresás los valores, obtenés el resultado al instante y listo.",
+    },
+    {
+        question: `¿Están actualizadas a la normativa de ${currentYear}?`,
+        answer: `Sí. Los cálculos de sueldo líquido, aguinaldo, IRPF y aportes usan los valores y franjas vigentes en ${currentYear} (BPS y DGI). Cuando cambian las tablas oficiales —normalmente en enero— actualizamos las calculadoras.`,
+    },
+    {
+        question: "¿De dónde salen los criterios de cálculo?",
+        answer: "Nos basamos en la normativa laboral y tributaria uruguaya: los aportes al BPS (jubilatorio, FONASA, FRL), las franjas del IRPF de la DGI y la Ley de Despido. Cada calculadora explica en detalle cómo hace el cálculo en su propia página.",
+    },
+    {
+        question: "¿Sirven si soy monotributista o unipersonal?",
+        answer: "Las calculadoras de sueldo están pensadas para trabajadores dependientes (con relación de dependencia). Si sos independiente, unipersonal o monotributista, tu régimen de aportes es distinto y los resultados no van a coincidir con tu situación real.",
+    },
+    {
+        question: "¿Los resultados son exactos?",
+        answer: "Son estimaciones muy cercanas para el caso general dependiente, pero pueden variar según tu situación particular (cajas paraestatales, régimen ficto, partidas no gravadas, etc.). Para montos oficiales, siempre confirmá con tu recibo de sueldo o un contador.",
+    },
+];
+
+const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+        },
+    })),
+};
+
+const schema = [breadcrumbSchema(breadcrumbs), faqSchema];
 ---
 
 <Layout
-    title="Calculadoras Uruguay - Sueldo, Impuestos y Más | CalculaEasy"
+    title="Calculadoras Uruguay {{year}} - Sueldo, Impuestos y Más"
     description="Todas las calculadoras de CalculaEasy: sueldo líquido, aguinaldo, salario vacacional, IVA, horas extra y más. Herramientas gratuitas para Uruguay."
     canonical="https://calculaeasy.com/calculadoras"
     schema={schema}
@@ -114,6 +152,136 @@ const tools = [
                     ))
                 }
             </div>
+
+            <!-- Contenido: guía por categorías -->
+            <section class="max-w-4xl mx-auto mt-16">
+                <h2
+                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4"
+                >
+                    ¿Qué podés calcular en CalculaEasy?
+                </h2>
+                <p class="text-slate-700 leading-relaxed mb-8">
+                    Reunimos en un solo lugar las cuentas que todo trabajador en
+                    Uruguay necesita hacer alguna vez: cuánto cobrás de verdad,
+                    cuánto te corresponde de aguinaldo o vacacional, y cuánto pagás
+                    de impuestos. Todas son gratuitas, no piden registro y explican
+                    paso a paso cómo llegan al resultado.
+                </p>
+
+                <div class="space-y-8">
+                    <div>
+                        <h3
+                            class="text-xl font-bold text-slate-900 mb-3"
+                        >
+                            Sueldo y remuneración
+                        </h3>
+                        <p class="text-slate-700 leading-relaxed">
+                            Empezá por la <a
+                                href="/calculadoras/sueldo-liquido-uruguay"
+                                class="text-indigo-600 font-medium hover:underline"
+                                >calculadora de sueldo líquido</a
+                            >, que convierte tu sueldo nominal en lo que
+                            realmente te llega al bolsillo descontando aportes
+                            jubilatorios, FONASA e IRPF. Si querés saber cuánto
+                            ganás por hora, día o año, el <a
+                                href="/calculadoras/conversor-sueldo-uruguay"
+                                class="text-indigo-600 font-medium hover:underline"
+                                >conversor de sueldo</a
+                            > te lo desglosa al instante. Y si hacés horas de más,
+                            la <a
+                                href="/calculadoras/horas-extra-uruguay"
+                                class="text-indigo-600 font-medium hover:underline"
+                                >calculadora de horas extra</a
+                            > te dice cuánto valen tus horas simples, dobles y en
+                            feriados.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3
+                            class="text-xl font-bold text-slate-900 mb-3"
+                        >
+                            Beneficios laborales
+                        </h3>
+                        <p class="text-slate-700 leading-relaxed">
+                            El <a
+                                href="/calculadoras/aguinaldo-uruguay"
+                                class="text-indigo-600 font-medium hover:underline"
+                                >aguinaldo</a
+                            > (sueldo anual complementario) se cobra en junio y
+                            diciembre: estimá cuánto te toca según los meses
+                            trabajados. El <a
+                                href="/calculadoras/salario-vacacional-uruguay"
+                                class="text-indigo-600 font-medium hover:underline"
+                                >salario vacacional</a
+                            > es esa suma extra para disfrutar la licencia, y
+                            podés calcular el monto líquido según tus días. Si te
+                            desvincularon, la <a
+                                href="/calculadoras/indemnizacion-despido-uruguay"
+                                class="text-indigo-600 font-medium hover:underline"
+                                >calculadora de indemnización por despido</a
+                            > estima cuánto te corresponde según tu antigüedad y
+                            salario.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3
+                            class="text-xl font-bold text-slate-900 mb-3"
+                        >
+                            Impuestos
+                        </h3>
+                        <p class="text-slate-700 leading-relaxed">
+                            La <a
+                                href="/calculadoras/iva-uruguay"
+                                class="text-indigo-600 font-medium hover:underline"
+                                >calculadora de IVA</a
+                            > te permite agregar o descontar el impuesto de una
+                            compra o venta, tanto con la tasa básica (22 %) como
+                            con la mínima (10 %). Útil para presupuestar,
+                            facturar o simplemente entender cuánto de un precio es
+                            impuesto.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ general -->
+            <section class="max-w-4xl mx-auto mt-16">
+                <h2
+                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-6"
+                >
+                    Preguntas frecuentes
+                </h2>
+                <div class="space-y-4">
+                    {
+                        faqs.map((faq) => (
+                            <details class="group bg-white rounded-2xl open:shadow-lg open:shadow-indigo-50/50 transition-all duration-300 border border-slate-100">
+                                <summary class="flex justify-between items-center font-medium cursor-pointer list-none py-5 px-6 text-lg text-slate-800">
+                                    <span>{faq.question}</span>
+                                    <span class="transition group-open:rotate-180">
+                                        <svg
+                                            fill="none"
+                                            height="24"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="1.5"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                        >
+                                            <path d="M6 9l6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </summary>
+                                <div class="text-slate-600 px-6 pb-6 pt-0 leading-relaxed">
+                                    {faq.answer}
+                                </div>
+                            </details>
+                        ))
+                    }
+                </div>
+            </section>
         </div>
     </div>
 </Layout>
