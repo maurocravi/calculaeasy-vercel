@@ -16,6 +16,13 @@ const {
 	canonical = "https://calculaeasy.com/",
 	schema,
 } = Astro.props;
+
+// Resuelve el token {{year}} de los títulos con el año actual (en build).
+// Un deploy en el nuevo año actualiza todos los títulos sin tocar código.
+const resolvedTitle = title.replaceAll(
+	"{{year}}",
+	String(new Date().getFullYear()),
+);
 ---
 
 <!doctype html>
@@ -32,7 +39,7 @@ const {
 				/>
 			)
 		}
-		<title>{title}</title>
+		<title>{resolvedTitle}</title>
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonical} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
