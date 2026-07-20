@@ -189,7 +189,16 @@ falta autoridad.
 Ordenados por impacto sobre esfuerzo. **El paso 1 es bloqueante: los demás no
 rinden hasta que esté resuelto.**
 
-### Paso 1 — 🔴 Hacer que canonical, sitemap y redirect digan lo mismo
+### Paso 1 — ✅ HECHO (20/07/2026) — Alinear canonical, sitemap y redirect
+
+**Resuelto.** `calculaeasy.com` quedó como dominio principal, `www` redirige con
+**301** hacia sin-`www`, y las 5 URLs devuelven 200 directo. Se agregó
+`trailingSlash: "never"` en `astro.config.mjs` para que el sitemap coincida con
+el canonical (commits `fd04ed3` y anteriores). Verificado contra producción con
+el `curl` de abajo: un único `HTTP/2 200`, sin `location`.
+
+<details>
+<summary>Detalle original del paso (por si hay que repetirlo)</summary>
 
 **Por qué primero:** es la causa raíz. Mientras el canonical apunte a una URL
 que devuelve 307, ningún otro paso de este plan puede funcionar. No tiene
@@ -235,49 +244,50 @@ Tiene que devolver un único `HTTP/2 200`, sin ningún `location`.
 deja de decir "La URL no está en Google". Las URLs con `www` desaparecen de
 `Páginas.csv` en el próximo export.
 
-### Paso 2 — Forzar la reindexación de las 5 páginas
+</details>
 
-**Por qué:** una vez arreglado el paso 1, Google puede tardar semanas en volver
-por su cuenta. Esto lo acelera.
+### Paso 2 — ✅ HECHO (20/07/2026) — Reindexación solicitada
 
-> ⚠️ Hacer esto **solo después** de verificar el paso 1 con el `curl` de arriba.
-> Si se pide indexación con el redirect todavía roto, Google revisita, vuelve a
-> encontrar la contradicción y el rechazo puede reforzarse.
+**Hecho.** Se solicitó indexación de las 5 URLs en Search Console y se reenvió el
+sitemap. **Ahora es cuestión de esperar 1-3 semanas** a que Google las procese.
 
-- [ ] En Search Console → Inspección de URL → **Solicitar indexación**, una por
-      una:
-      - `/calculadoras`
-      - `/calculadoras/horas-extra-uruguay`
-      - `/calculadoras/iva-uruguay`
-      - `/calculadoras/salario-vacacional-uruguay`
-      - `/calculadoras/indemnizacion-despido-uruguay`
-- [ ] Reenviar el sitemap desde Search Console.
-- [ ] Engordar `/calculadoras`: hoy tiene **164 palabras** contra 865-1.345 de
-      las demás. Es el hub que reparte autoridad hacia el resto y es la página
-      más flaca del sitio. Con tan poco contenido, aunque se arregle el
-      redirect, es candidata a "Rastreada: actualmente sin indexar".
+- [x] Solicitar indexación de las 5 URLs.
+- [x] Reenviar el sitemap.
+- [ ] **Pendiente / continuo:** engordar `/calculadoras`, que hoy tiene **164
+      palabras** contra 865-1.345 de las demás. Es el hub que reparte autoridad y
+      la página más flaca del sitio; con tan poco contenido puede quedar como
+      "Rastreada: actualmente sin indexar" aun con el redirect ya arreglado.
 
 **Cómo sé si funcionó:** cualquier número de impresiones mayor a cero en esas
-URLs. Dale 2-3 semanas después de solicitar la indexación.
+URLs. Es la métrica a vigilar las próximas semanas.
 
-### Paso 3 — Reescribir títulos y descripciones
+### Paso 3 — ✅ HECHO (20/07/2026) — Títulos y descripciones reescritos
 
-**Por qué:** es la palanca más directa sobre el CTR, que es el problema
-principal. Con 21.000 impresiones, pasar de 1 % a 2,5 % de CTR son ~320 clics
-más por trimestre sin ganar una sola posición.
+**Hecho.** Se reescribieron los 7 títulos y descripciones de las calculadoras,
+priorizando año, cifra y vocabulario real de búsqueda por sobre la marca (que ya
+aparece en el dominio visible). Todos quedaron bajo 60 caracteres.
 
-- [ ] Reescribir los `<title>` de las 8 calculadoras incorporando: **el año**,
-      una **cifra concreta** cuando aplique, y el término tal como lo busca la
-      gente. Ejemplos:
-      - `Calcular Aguinaldo Uruguay - CalculaEasy`
-        → `Calculadora de Aguinaldo Uruguay 2026: cuánto cobrás`
-      - `Conversor de Sueldo Uruguay - CalculaEasy`
-        → `Cuánto gano por hora, día y año — Sueldo Uruguay 2026`
-- [ ] Reescribir las `description` en la misma línea: que respondan la pregunta
-      del buscador, no que describan la herramienta.
-- [ ] Priorizar las consultas de la tabla del punto 1 del diagnóstico: son
-      posiciones top-5 con cero clics, donde el margen de mejora es mayor.
-- [ ] Mantener los títulos por debajo de ~60 caracteres para que no se corten.
+| Página | Título nuevo |
+| --- | --- |
+| conversor | Cuánto Gano por Hora, Día y Año — Sueldo Uruguay 2026 |
+| sueldo líquido | Calculadora Sueldo Líquido Uruguay 2026 \| Nominal a Líquido |
+| aguinaldo | Calculadora de Aguinaldo Uruguay 2026 \| Cuánto Cobrás |
+| IVA | Calculadora de IVA Uruguay 2026 \| Tasa 22% y 10% |
+| horas extra | Calculadora de Horas Extra Uruguay 2026 \| Valor Hora |
+| vacacional | Calculadora de Salario Vacacional Uruguay 2026 |
+| despido | Indemnización por Despido Uruguay 2026 \| Calculadora |
+
+**A tener en cuenta:**
+
+- Los títulos llevan **"2026" hardcodeado**. Hay que actualizarlos en enero de
+  2027, o hacerlos dinámicos con `new Date().getFullYear()`. Anotarlo en el
+  calendario para no quedar con el año viejo, que da mala señal.
+- El cambio de títulos **puede mover posiciones en cualquier dirección** las
+  primeras semanas. Fecha del cambio: 20/07/2026, para poder atribuir el efecto.
+
+**Cómo sé si funcionó:** comparar el CTR por página dentro de 4-6 semanas. La
+posición debería quedar más o menos igual; lo que tiene que subir es el CTR.
+Objetivo realista: de ~1 % a 2,5-3 %.
 
 **Cómo sé si funcionó:** comparar el CTR por página dentro de 4-6 semanas. Es la
 métrica a mirar; la posición debería quedar igual.
